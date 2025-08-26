@@ -222,12 +222,25 @@
         const input = document.getElementById('chatInput');
         const txt = input.value.trim();
         if (!txt) return;
+        
         addMessage(txt, 'user');
         input.value = '';
-        setTimeout(async () => {
-          const resp = (await get_si_response(txt)).trim();
-          addMessage(resp, 'bot');
-        }, 300);
+        
+        // Show typing indicator
+        const typingIndicator = addMessage('🤖 typing...', 'bot');
+        
+        try {
+          setTimeout(async () => {
+            const resp = (await get_si_response(txt)).trim();
+            // Remove typing indicator
+            typingIndicator.remove();
+            addMessage(resp, 'bot');
+          }, 300);
+        } catch (err) {
+          typingIndicator.remove();
+          addMessage('🚨 Sorry, I encountered an error processing your message.', 'bot');
+          console.error('Response error:', err);
+        }
       };
 
       function addMessage(txt, sender) {
@@ -237,15 +250,32 @@
         const c = document.getElementById('chatMessages');
         c.appendChild(msg);
         c.scrollTop = c.scrollHeight;
+        return msg; // Return the element for potential removal
       }
-      const MODEL_URL = 'https://semiintelligence.pythonanywhere.com/model/Alex_44R';
+      const MODEL_URL = './Alex_44R.json'; // Use local model file
        (async () => {
         try {
-          console.log('Loading model...');
           await loadModel(MODEL_URL);
-          console.log('Model loaded successfully!');
+          addMessage("🤖 Hi! I'm Alex, ready to chat!", 'bot');
         } catch (err) {
           console.error('Error loading model:', err);
+          addMessage("🚨 Failed to load AI model. Using offline fallback responses.", 'bot');
+          // Simple fallback when model fails to load
+          window.get_si_response = async (input) => {
+            const greetings = ['hello', 'hi', 'hey', 'greetings'];
+            const jokes = ['joke', 'funny', 'laugh'];
+            const thanks = ['thank', 'thanks'];
+            
+            if (greetings.some(g => input.toLowerCase().includes(g))) {
+              return `Hi there! 👋 I'm running in fallback mode.`;
+            } else if (jokes.some(j => input.toLowerCase().includes(j))) {
+              return `Here's a simple joke: Why did the programmer quit? Because they didn't get arrays! 😄`;
+            } else if (thanks.some(t => input.toLowerCase().includes(t))) {
+              return `You're welcome! 😊`;
+            } else {
+              return `I heard you say "${input}" - that's interesting! (Running in fallback mode)`;
+            }
+          };
         }
         const saved = localStorage.getItem('name');
         if (saved) document.getElementById('name').value = saved;

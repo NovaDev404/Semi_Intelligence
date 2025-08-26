@@ -43,20 +43,58 @@ If you’re after casual chat, I recommend Alex for its friendly tone, varied re
 ## 📁 File Structure
 ```
 Semi_Intelligence/
-├── index.html # Frontend UI
-├── model.json # AI brain: keywords, responses, functions
-└── SI.js # The core chatbot engine (tiny + powerful)
+├── SI.js              # Core chatbot engine (lightweight & powerful)
+├── SI.html            # Main chat interface with model switching
+├── README.md          # This documentation
+└── demo/              # Ready-to-use demo
+    ├── index.html     # Simple demo interface
+    ├── Alex_44R.json  # 44-response AI model (recommended)
+    ├── Jacob_6R.json  # 6-response lightweight model
+    └── Norman_98R.json # 98-response advanced model
 ```
 
 ---
 
 ## 🚀 Get Started
 
-1. **Clone or download**
-2. Download a model from the releases section into the same folder
-3. Start a local server (I recommend using `python -m http.server`)
-4. Open the local server in your browser
-5. Start chatting with your mini AI!
+### Quick Start (Local Demo)
+1. **Clone or download** this repository
+2. **Navigate to the demo folder**: `cd demo/`
+3. **Start a local server**: `python -m http.server 8000` (or use any static file server)
+4. **Open your browser** to `http://localhost:8000`
+5. **Start chatting** with the pre-loaded Alex model!
+
+### Using Your Own Models
+1. **Download models** from the [releases section](https://github.com/SuperGamer474/Semi_Intelligence/releases)
+2. **Place model files** in your project directory
+3. **Load the model** in your JavaScript:
+   ```javascript
+   import { loadModel, get_si_response } from './SI.js';
+   
+   // Load a model
+   await loadModel('./your-model.json');
+   
+   // Get a response
+   const response = await get_si_response('Hello there!');
+   console.log(response); // "Hi! How can I help you today?"
+   ```
+
+### Custom Model Creation
+Create your own model by following this JSON structure:
+```json
+{
+  "functions": {
+    "name": "() => localStorage.getItem('name') || 'friend'",
+    "timeOfDay": "() => { const h = new Date().getHours(); return h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'; }"
+  },
+  "greetings": ["hello", "hi", "hey"],
+  "responses_greetings": ["Hi {{name}}! Good {{timeOfDay}}!", "Hello there!"],
+  "response_map": {
+    "greetings": "responses_greetings"
+  },
+  "unsure_responses": ["I'm not sure about that.", "Could you rephrase?"]
+}
+```
 
 ---
 
@@ -66,6 +104,32 @@ Semi_Intelligence/
 - Lightweight NPC dialogue in games 🎮  
 - Offline tools or interactive lessons 📚  
 - Anywhere you need basic *instant*, *tiny*, and *low-RAM* logic ⚡
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**🚨 "Model not loaded" error:**
+- Ensure you're running a local server (not opening HTML files directly)
+- Check that the model JSON file exists in the correct path
+- Verify the file is valid JSON format
+
+**💻 Demo not working:**
+- Make sure you're in the `demo/` folder when starting the server
+- Try a different port: `python -m http.server 3000`
+- Check browser console for detailed error messages
+
+**🤖 Bot not responding:**
+- Check if the model file contains the required fields (`response_map`, keywords, responses)
+- Verify your input matches keywords in the model
+- Try basic greetings like "hello" first
+
+### Performance Tips
+- Use smaller models (like Jacob 6R) for faster loading
+- Cache models locally instead of loading from remote URLs
+- Minimize placeholder functions for better performance
 
 ---
 

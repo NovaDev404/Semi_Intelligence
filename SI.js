@@ -9,18 +9,35 @@ export async function loadModel(filename = './model.json') {
     return modelJSON;
   }
 
-  const resp = await fetch(filename);
-  modelJSON = await resp.json();
-  modelJSON._filename = filename; // track which file is loaded
-
-  // Parse function strings to real JS functions
-  functions = {};
-  if (modelJSON.functions) {
-    for (const fnName in modelJSON.functions) {
-      functions[fnName] = new Function('return ' + modelJSON.functions[fnName])();
+  try {
+    const resp = await fetch(filename);
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch model: ${resp.status} ${resp.statusText}`);
     }
+    
+    modelJSON = await resp.json();
+    modelJSON._filename = filename; // track which file is loaded
+
+    // Validate essential model structure
+    if (!modelJSON.response_map) {
+      throw new Error('Invalid model: missing response_map');
+    }
+
+    // Parse function strings to real JS functions
+    functions = {};
+    if (modelJSON.functions) {
+      for (const fnName in modelJSON.functions) {
+        try {
+          functions[fnName] = new Function('return ' + modelJSON.functions[fnName])();
+        } catch (err) {
+          console.warn(`Failed to parse function ${fnName}:`, err);
+        }
+      }
+    }
+    return modelJSON;
+  } catch (err) {
+    throw new Error(`Failed to load model from ${filename}: ${err.message}`);
   }
-  return modelJSON;
 }
 
 // Replace {{placeholders}} in text by calling corresponding cached functions
@@ -70,7 +87,6 @@ export async function get_si_response(input) {
   // 1) Find all matching response templates
   for (const keywordSet in modelJSON.response_map) {
     const keywords = modelJSON[keywordSet];
-    console.log("Checking keywordSet:", keywordSet, "=>", keywords);
     if (!keywords) continue;
     if (containsAny(input, keywords)) {
       const responseKey = modelJSON.response_map[keywordSet];
