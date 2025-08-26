@@ -9,6 +9,19 @@ A JavaScript-based chatbot system built for speed, minimal footprint, and smart 
 
 Click [here](https://supergamer474.github.io/Semi_Intelligence/demo/) to try Semi Intelligence right here, right now!
 
+### ⚡ Quick Start (30 seconds)
+```bash
+# Clone the repo
+git clone https://github.com/SuperGamer474/Semi_Intelligence.git
+cd Semi_Intelligence
+
+# Start local server
+python -m http.server 8000
+
+# Open http://localhost:8000/demo in your browser
+# Start chatting immediately! 🚀
+```
+
 ---
 
 ## 💾 Key Features
@@ -18,6 +31,8 @@ Click [here](https://supergamer474.github.io/Semi_Intelligence/demo/) to try Sem
 - 🧠 **Lightweight**: Minimal RAM usage — runs smoothly on *anything*, even low-spec devices
 - 🪄 **Dynamic**: Smart placeholder functions like `{{name}}`, `{{timeOfDay}}`, and `{{randomEmoji}}`
 - 🧰 **Offline-first**: 100% client-side. No APIs. No Internet. Works everywhere.
+- 🔄 **Model Switching**: Switch between different AI personalities on the fly
+- 🎯 **Error Resilient**: Graceful fallbacks and helpful error messages
 
 ---
 

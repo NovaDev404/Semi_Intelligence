@@ -7,25 +7,41 @@
   <title>SI Chat - Ultimate Epic Style</title>
   <script type="module">
     // We'll update this when the dropdown changes
-    export let currentModelUrl = "https://semiintelligence.pythonanywhere.com/model/model_6R";
+    export let currentModelUrl = "./demo/Jacob_6R.json";
 
     import { loadModel, get_si_response } from './SI.js';
 
     // Pre-load the default model
     (async () => {
-      await loadModel(currentModelUrl);
+      try {
+        await loadModel(currentModelUrl);
+        window.addMessage("🤖 Jacob model loaded! I'm ready to chat!", 'bot');
+      } catch (err) {
+        console.error('Error loading model:', err);
+        window.addMessage("🚨 Failed to load model. Please check if the model file exists.", 'bot');
+      }
     })();
 
     // Expose a function to switch models
     window.switchModel = async (newUrl) => {
-      currentModelUrl = newUrl;
-      await loadModel(currentModelUrl);
-      // Optionally: clear chat or notify the user
-      const notice = document.createElement('div');
-      notice.classList.add('message', 'bot');
-      notice.textContent = `🛠️ Switched model to: ${newUrl.split('/').pop()}`;
-      document.getElementById('chatMessages').appendChild(notice);
-      document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      try {
+        currentModelUrl = newUrl;
+        await loadModel(currentModelUrl);
+        // Optionally: clear chat or notify the user
+        const modelName = newUrl.split('/').pop().replace('.json', '');
+        const notice = document.createElement('div');
+        notice.classList.add('message', 'bot');
+        notice.textContent = `🛠️ Switched to ${modelName} model! Hello again!`;
+        document.getElementById('chatMessages').appendChild(notice);
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      } catch (err) {
+        console.error('Error switching model:', err);
+        const errorNotice = document.createElement('div');
+        errorNotice.classList.add('message', 'bot');
+        errorNotice.textContent = `🚨 Failed to switch to new model: ${err.message}`;
+        document.getElementById('chatMessages').appendChild(errorNotice);
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      }
     };
 
     // Handle form submission
@@ -235,8 +251,9 @@
   <div style="position: fixed; top: 60px; left: 0; margin: 0; padding: 10px 20px; background: #1a1d2e; color: #e0e6f0; font-family: 'Inter', sans-serif; z-index: 9999; box-shadow: 2px 2px 8px #0009;">
     <label for="modelChooser" style="font-weight: 600; margin-right: 8px;">Choose Model:</label>
     <select id="modelChooser" onchange="switchModel(this.value)" style="padding: 6px 8px; border-radius: 4px; border: none; outline: none; background: #25304b; color: #e0e6f0;">
-      <option value="https://semiintelligence.pythonanywhere.com/model/model_6R">Bob 6R</option>
-      <option value="https://semiintelligence.pythonanywhere.com/model/model_50R">Alex 50R</option>
+      <option value="./demo/Jacob_6R.json">Jacob 6R (Lightweight)</option>
+      <option value="./demo/Alex_44R.json">Alex 44R (Recommended)</option>
+      <option value="./demo/Norman_98R.json">Norman 98R (Advanced)</option>
     </select>
   </div>
 
