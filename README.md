@@ -7,7 +7,7 @@ A JavaScript-based chatbot system built for speed, minimal footprint, and smart 
 
 ## 😜 Try it now!
 
-Click [here](https://supergamer474.github.io/Semi_Intelligence/demo/) to try Semi Intelligence right here, right now!
+Click [here](https://novadev404.github.io/Semi_Intelligence/demo/) to try Semi Intelligence right here, right now!
 
 ---
 
@@ -79,7 +79,7 @@ Use it for fun, learning, and simple chats — but don’t expect a perfect AI g
 
 ## 🧙‍♂️ Created by
 
-**[SuperGamer474](https://supergamer474.rf.gd/home/)**
+**[NovaDev404](https://novadev.vip)**
 
 ---
 
